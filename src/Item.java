@@ -1,13 +1,12 @@
 import java.util.HashMap;
 
 /**
+ * Add a variable to this class that controls hows the comparable methods compares two objects ? maybe
  * @author juan
  *
  */
 public class Item {
-    private HashMap<String, String> attributes;
-    
-    
+    private HashMap<String, String> attributes;  
     
     /**** Constructors *****/
 
@@ -92,6 +91,7 @@ public class Item {
     		return attributes.containsValue(value);
     }
     
+    /***** Private *****/
     
     
     
