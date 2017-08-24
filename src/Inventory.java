@@ -1,13 +1,18 @@
 import java.util.HashMap;
 
 /**
- * This class needs to have as default a number of attributes that it can sort by and have the appropireate sorting methods
+ * This class needs to have as default a number of attributes that it can sort by and have the appropireate sorting methods ? Maybe
+ * Change inventory to arraylist?
  * @author juan
  *
  */
 public class Inventory {
 	public static final String ITEM_ID = "ID";
 	public static final String ITEM_NAME = "Item Name";
+	public static final String QUANTINTY = "Quantinty";
+	public static final String NUMBER_SOLD = "Number Sold";
+	public static final String PRICE = "Price";
+	public static final String COST = "Cost";
 	
 	private HashMap<String, Item> inventory;
 	private Item[] sortedInventory;   //Its sorted only when called so items are sorted as they get added/Get added

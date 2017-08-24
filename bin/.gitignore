@@ -1,3 +1,4 @@
+/CMDTester.class
 /DisplayTable.class
 /Inventory.class
 /Item.class
@@ -7,3 +8,5 @@
 /Payment.class
 /Sale.class
 /Tester.class
+/Person.class
+/Register.class

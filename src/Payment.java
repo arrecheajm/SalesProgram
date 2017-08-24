@@ -22,10 +22,26 @@ public class Payment {
 	}
 	
 	/***** Setters *****/
+	public void setAttribute(String attribute, Double value) {
+		details.put(attribute, value);
+	}
 	
 	/***** Getters *****/
+	public Double getValueForKey(String attribute) {
+		return details.get(attribute);
+	}
 	
 	/***** Other *****/
+	@Override
+	public String toString() {
+		return details.toString();
+	}
+	public boolean containsKey(String attribute) {
+		return details.containsKey(attribute);
+	}
+	public boolean containsValue(Double value) {
+		return details.containsValue(value);
+	}
 	
 	/***** Private *****/
 	
