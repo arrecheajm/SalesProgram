@@ -7,7 +7,7 @@ public class Sale {
 	public static final String QUANTITY_SOLD = "Quantity Sold";
 	
 	//should be able to purchase multiple items
-	private Item[] items;
+	private HashMap<Item, Integer> items;
 	private Date saleDate;
 	private Payment payment;
 	private HashMap<String, String> saleDetails;
@@ -18,7 +18,7 @@ public class Sale {
 		saleDetails = new HashMap<String, String>();
 	}
 	
-	public Sale (Item[] items, Date saleDate, Payment payment, String numberSold) {
+	public Sale (HashMap<Item, Integer> items, Date saleDate, Payment payment) {
 		this();
 		if (items != null) {
 			this.items = items;
@@ -29,13 +29,12 @@ public class Sale {
 		if (payment != null) {
 			this.payment = payment;
 		}
-		saleDetails.put(QUANTITY_SOLD, numberSold);
 	}
-	public Sale(Item item, Date saleDate, Payment payment, String numberSold ) {
+	public Sale(Item item, Date saleDate, Payment payment, int numberSold ) {
 		this();
 		if (item != null) {
-			this.items = new Item[1];
-			items[0] = item;
+			this.items = new HashMap<Item, Integer>();
+			items.put(item, numberSold);
 		}
 		if (saleDate != null) {
 			this.saleDate = saleDate;
@@ -43,7 +42,6 @@ public class Sale {
 		if (payment != null) {
 			this.payment = payment;
 		}
-		saleDetails.put(QUANTITY_SOLD, numberSold);
 	}
 	
 	/***** Setters *****/
@@ -57,7 +55,7 @@ public class Sale {
 			this.payment = payment;
 		}
 	}
-	public void setItemsSold(Item[] items) {
+	public void setItemsSold(HashMap<Item, Integer> items) {
 		if(items != null) {
 			this.items = items;
 		}
@@ -67,15 +65,15 @@ public class Sale {
 			saleDetails.put(attribute, value);
 		}
 	}
-	public void setNumberSold(int numberSold) {
-		saleDetails.put(QUANTITY_SOLD, Double.toString(numberSold));
+	public void setNumberSold(Item item, int numberSold) {
+		items.put(item, numberSold);
 	}
 	
 	/***** Getters *****/
 	public Date getSaleDate() {
 		return this.saleDate;
 	}
-	public Item[] getItemsSold() {
+	public HashMap<Item, Integer> getItemsSold() {
 		return this.items;
 	}
 	public Payment getPaymentMethod() {

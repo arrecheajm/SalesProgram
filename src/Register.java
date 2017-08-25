@@ -15,20 +15,11 @@ public class Register {
 		inventory = new Inventory();
 	}
 	
-	public Register(Inventory inventory, ArrayList<Sale> ledger) {
+	public Register(Inventory inventory) {
+		ledger = new ArrayList<Sale>();
 		if (inventory != null) {
 			this.inventory = inventory;
 		}
-		if (ledger != null) {
-			this.ledger = ledger;
-		}
-	}
-	public Register( Inventory inventory, Sale sale) {
-		this();
-		if (inventory != null) {
-			this.inventory = inventory;
-		}
-		ledger.add(sale);
 	}
 	
 	/***** Setters *****/
@@ -37,12 +28,8 @@ public class Register {
 	
 	/***** Other *****/
 	public void addNewSale(Sale sale) {
-		Item[] itemsSold;
 		if (sale != null) {
-			itemsSold = sale.getItemsSold();
-			for (int i=0; i<itemsSold.length; i++) {
-				
-			}
+			
 		}
 	}
 	

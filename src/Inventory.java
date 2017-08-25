@@ -14,7 +14,7 @@ public class Inventory {
 	public static final String PRICE = "Price";
 	public static final String COST = "Cost";
 	
-	private HashMap<String, Item> inventory;
+	private HashMap<String, Item> inventory; // This should be changed to an arrayList or something similar that can be iterated
 	private Item[] sortedInventory;   //Its sorted only when called so items are sorted as they get added/Get added
 	
 	
@@ -130,7 +130,7 @@ public class Inventory {
 	 * @return
 	 */
 	public Item[] getSortedInventory(String filter){
-		return null;
+		inventory.to
 	}
 	
 	/* (non-Javadoc)
