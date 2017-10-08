@@ -8,10 +8,21 @@ public class Sale {
 	public static final String QUANTITY_SOLD = "Quantity Sold";
 	public static final String PAYMENT_TYPE = "Payment Type";
 	public static final String MULTIPLE_PAYMENT_TYPES = "Multiple Payment Types";
-	public static final String PAYMENT_VERIFIED = "Payment Valid";
+	public static final String PAYMENT_VERIFIED = "Payment Verified";
+	public static final String PAYMENT_VERIFIED_PAID_IN_FULL = "Zero Balance";
+	public static final String PAYMENT_VERIFIED_OVERPAID = "Positive Balance";
+	public static final String PAYMENT_VERIFIED_UNDERPAID = "Negative Balance";
 	public static final String TOTAL_PRICE = "Total Price";
 	public static final String TOTAL_PAID = "Total Paid";
 	public static final String CHANGE_AMOUNT = "Change Amount";
+	public static final String NO_CHANGE = "0.0";
+	public static final String AMOUNT_DUE = "Amount Due";
+	public static final String PAYMENT_FAILED_NO_PAYMENT = "No Payment";
+	
+	public static final int PAYMENT_FAILED = -1;
+	public static final int PAYMENT_IN_FULL = 0;
+	public static final int PAYMENT_OVERPAID = 1;
+	public static final int PAYMENT_UNDERPAID = 2;
 	
 	
 	//should be able to purchase multiple items
@@ -19,7 +30,6 @@ public class Sale {
 	private Date saleDate;
 	private Payment payment;
 	private HashMap<String, String> saleDetails;
-	private boolean paidInFull;
 	
 	/***** Constructors *****/
 	
@@ -81,9 +91,10 @@ public class Sale {
 	/**
 	 * @param payment
 	 */
-	public void setPayment(Payment payment) {
-		if (payment != null) {
+	public void setPayment(Payment payment, String paymentType) {
+		if (payment != null && paymentType != null) {
 			this.payment = payment;
+			saleDetails.put(PAYMENT_TYPE, paymentType);
 		}
 	}
 	/**
@@ -127,8 +138,11 @@ public class Sale {
 	/**
 	 * @return
 	 */
-	public Payment getPaymentMethod() {
+	public Payment getPayment() {
 		return this.payment;
+	}
+	public String getPaymentType(){
+		return saleDetails.get(PAYMENT_TYPE);
 	}
 	
 	/**
@@ -165,29 +179,29 @@ public class Sale {
 	/**
 	 * @return
 	 */
-	public boolean validatePayment(){
+	public int validatePayment(){
 		double totalPrice = calculateTotalPrice();
 		double totalPaid = calculateTotalPaid();
 		
-		if (totalPaid < 0){
-			System.err.println("***** Payment Verification Failed *****\n\t\t totalPaid = "+totalPaid);			
+		if (totalPaid < 0){	
+			saleDetails.put(PAYMENT_VERIFIED, PAYMENT_FAILED_NO_PAYMENT);
+			return PAYMENT_FAILED;
 		} else {
 			if (totalPrice == totalPaid){
-				saleDetails.put(CHANGE_AMOUNT, "0.0");
-				saleDetails.put(PAYMENT_VERIFIED, ""+true);
-				paidInFull = true;
-				return true;
+				saleDetails.put(CHANGE_AMOUNT, NO_CHANGE);
+				saleDetails.put(PAYMENT_VERIFIED, PAYMENT_VERIFIED_PAID_IN_FULL);
+				return PAYMENT_IN_FULL;
 			} else if (totalPrice < totalPaid){
 				saleDetails.put(CHANGE_AMOUNT, ""+(totalPaid - totalPrice));
-				paidInFull = true;
-				saleDetails.put(PAYMENT_VERIFIED, ""+true);
-				return true;
+				saleDetails.put(PAYMENT_VERIFIED, PAYMENT_VERIFIED_OVERPAID);
+				return PAYMENT_OVERPAID;
 			} else {
-				paidInFull =false;
-				if ()
-			}
-			
-		}		
+				saleDetails.put(CHANGE_AMOUNT, NO_CHANGE);
+				saleDetails.put(AMOUNT_DUE, ""+(totalPrice - totalPaid));
+				saleDetails.put(PAYMENT_VERIFIED, PAYMENT_VERIFIED_OVERPAID);
+				return PAYMENT_UNDERPAID;
+			}			
+		}
 	}
 	
 	/***** Private *****/
@@ -215,6 +229,7 @@ public class Sale {
 			totalPaid += payment.getValueForKey(Payment.CARD_PAYMENT);
 			totalPaid += payment.getValueForKey(Payment.CASH_PAYMENT);
 			totalPaid += payment.getValueForKey(Payment.CHECK_PAYMENT);
+			totalPaid += payment.getValueForKey(Payment.OTHER_PAYMENT);
 		} else {
 			totalPaid += payment.getValueForKey(paymentType);
 		}

@@ -4,6 +4,7 @@ public class Payment {
 	public static final String CASH_PAYMENT = "Cash Payment";
 	public static final String CARD_PAYMENT = "Card Payment";
 	public static final String CHECK_PAYMENT = "Check Payment";
+	public static final String OTHER_PAYMENT = "Other";
 	
 	private HashMap<String, Double>details;	
 	
@@ -23,12 +24,6 @@ public class Payment {
 	public Payment(HashMap<String, Double> details) {
 		if (details != null) {
 			this.details = details;
-		}
-	}
-	public Payment(String paymentType){
-		this();
-		if (paymentType != null){
-			details.put(Sale.PAYMENT_TYPE, paymentType);
 		}
 	}
 	
@@ -60,7 +55,6 @@ public class Payment {
 	public Double getValueForKey(String attribute) {
 		return details.get(attribute);
 	}
-	public 
 	
 	/***** Other *****/
 	

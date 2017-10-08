@@ -32,8 +32,23 @@ public class Register {
 	/***** Other *****/
 	
 	public void addNewSale(Sale sale) {
+		int paymentReturnCode;
 		boolean canMakeSale = preSaleInventoryCheck(sale);
-		
+		if (canMakeSale){
+			paymentReturnCode = sale.validatePayment();
+			if (paymentReturnCode == Sale.PAYMENT_FAILED) {
+				System.err.println("Sale Failed / Payment Failed: "+sale.getValueForKey(Sale.PAYMENT_VERIFIED));
+			} else if (paymentReturnCode == Sale.PAYMENT_UNDERPAID){
+				if (allowNegativeSales){
+					// Continue processing sale
+				} else {
+					System.err.println("Sale Failed: "+Sale.PAYMENT_VERIFIED_UNDERPAID);
+				}
+			} else if (paymentReturnCode == Sale.PAYMENT_OVERPAID) {
+				// Check if payment type is cash, if not fail the sale for over charging, if cash, add method stub to check for change in cashBox
+				// After change, continue to process sale
+			}
+		}		
 	}
 	
 	
@@ -96,18 +111,19 @@ public class Register {
 			return false;
 		}
 	}
+	/**
+	 * This method will make inventory adjustments after to account for a sale:
+	 * 	Increment number sold
+	 * 	Decrement number available
+	 *	Date stamp on sale
+	 * @param sale
+	 */
+	public void processSale(Sale sale){
+		
+	}
 	
 	
 	/***** Private *****/
-	
-	/**
-	 * @param numberNeeded
-	 * @param item
-	 * @return
-	 */
-	private boolean checkInventory(int numberNeeded, Item item){
-		return numberNeeded >= checkInventory(item);
-	}
 	
 	
 }
