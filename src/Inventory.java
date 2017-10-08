@@ -1,22 +1,19 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  * This class needs to have as default a number of attributes that it can sort by and have the appropireate sorting methods ? Maybe
  * Change inventory to arraylist?
+ * Add boolean returns to all getters on this class?
  * @author juan
  *
  */
 public class Inventory {
-	public static final String ITEM_ID = "ID";
-	public static final String ITEM_NAME = "Item Name";
-	public static final String QUANTINTY = "Quantinty";
-	public static final String NUMBER_SOLD = "Number Sold";
-	public static final String PRICE = "Price";
-	public static final String COST = "Cost";
 	
-	private HashMap<String, Item> inventory; // This should be changed to an arrayList or something similar that can be iterated
+	
+	//private HashMap<String, Item> inventory; // This should be changed to an arrayList or something similar that can be iterated
+	private ArrayList<Item> inventory;
 	private Item[] sortedInventory;   //Its sorted only when called so items are sorted as they get added/Get added
-	
 	
 	/***** Constructors *****/
 	
@@ -24,13 +21,13 @@ public class Inventory {
 	 * 
 	 */
 	public Inventory() {
-		inventory = new HashMap<String, Item>();
+		inventory = new ArrayList<Item>();
 	}
 	
 	/**
 	 * @param inventory
 	 */
-	public Inventory(HashMap<String, Item> inventory) {
+	public Inventory(ArrayList<Item> inventory) {
 		this.inventory = inventory;
 	}
 	/**
@@ -38,16 +35,16 @@ public class Inventory {
 	 * @param item
 	 */
 	public Inventory(String name, Item item) {
-		inventory = new HashMap<String, Item>();
-		item.setAttribute(ITEM_NAME, name);
-		inventory.put(name, item);
+		inventory = new ArrayList<Item>();
+		item.setAttribute(Item.ITEM_NAME, name);
+		inventory.add(item);
 	}
 	/**
 	 * @param item
 	 */
 	public Inventory(Item item) {
-		inventory = new HashMap<String, Item>();
-		inventory.put(item.getValueForKey(ITEM_NAME), item);
+		inventory = new ArrayList<Item>();
+		inventory.add(item);
 	}
 	
 	/***** Setters *****/
@@ -58,13 +55,11 @@ public class Inventory {
 	 * @param value
 	 */
 	public void setAttribute(String itemName, String attribute, String value) {
-		Item item = null;
-		
+		Item temp = null;
 		if (itemName != null) {
-			item = inventory.get(itemName);
-			
-			if (item !=null) {
-				item.setAttribute(attribute, value);
+			temp = findItem(itemName);			
+			if (temp !=null) {
+				temp.setAttribute(attribute, value);
 			}
 		}
 	}
@@ -73,14 +68,7 @@ public class Inventory {
 	 * @param newName
 	 */
 	public void setName(String itemName, String newName) {
-		Item item = null;
-		
-		if (itemName != null) {
-			item = inventory.get(itemName);			
-			if (item !=null) {
-				item.setAttribute(ITEM_NAME, newName);
-			}
-		}
+		setAttribute(itemName, Item.ITEM_NAME, newName);
 	}
 	
 	
@@ -92,15 +80,31 @@ public class Inventory {
 	 * @return
 	 */
 	public String getAttribute(String itemName, String attribute) {
-		Item item = null;
-		
+		Item temp = null;
 		if (itemName != null) {
-			item = inventory.get(itemName);
-			if (item  != null) {
-				return item.getValueForKey(attribute);
+			temp = findItem(itemName);			
+			if (temp !=null) {
+				temp.getValueForKey(attribute);
 			}
 		}
 		return null;
+	}
+	/**
+	 * @param item
+	 * @param attribute
+	 * @return
+	 */
+	public String getAttribute(Item item, String attribute){
+		String value = null;
+		int itemIndex = -1;
+		
+		if (item != null){
+			itemIndex = getItemIndex(item);
+			if (itemIndex >= 0){
+				value = inventory.get(itemIndex).getValueForKey(attribute);
+			}
+		}
+		return value;
 	}
 	
 	
@@ -111,7 +115,12 @@ public class Inventory {
 	 */
 	public void addIventoryItem(Item item) {
 		if (item != null) {
-			inventory.put(item.getValueForKey(ITEM_NAME), item);
+			Item temp = findItem(item.getValueForKey(Item.ITEM_NAME));
+			if (temp == null){
+				inventory.add(item);
+			} else {
+				temp.incrementIntegerValue(Item.QUANTINTY, 1);
+			}
 		}
 	}
 	/**
@@ -119,9 +128,11 @@ public class Inventory {
 	 * @param item
 	 */
 	public void addIventoryItem(String itemName, Item item) {
-		item.setAttribute(ITEM_NAME, itemName);
 		if (itemName != null && item != null) {
-			inventory.put(itemName, item);
+			item.setAttribute(Item.ITEM_NAME, itemName);
+			if (!inventory.contains(item)) {
+				inventory.add(item);
+			}
 		}
 	}
 	
@@ -130,7 +141,8 @@ public class Inventory {
 	 * @return
 	 */
 	public Item[] getSortedInventory(String filter){
-		inventory.to
+		return sortedInventory;
+		
 	}
 	
 	/* (non-Javadoc)
@@ -140,9 +152,87 @@ public class Inventory {
 	public String toString() {
 		return inventory.toString();		
 	}
+	/**
+	 * @param item
+	 * @return
+	 */
+	public boolean contains(Item item){
+		if (findItem(item) != null){
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * @param itemName
+	 * @return
+	 */
+	public boolean contains(String itemName){
+		if (findItem(itemName) != null){
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * @param item
+	 * @return
+	 */
+	public Item find(Item item){
+		return findItem(item);
+	}
+	/**
+	 * @param itemName
+	 * @return
+	 */
+	public Item find(String itemName){
+		return findItem(itemName);
+	}
 	
 	/***** Private *****/
-	
+	/**
+	 * @param item
+	 * @return
+	 */
+	private Item findItem(Item item){
+		Item temp = null;
+		if (item != null){
+			for (Item current : inventory){
+				if (current.equals(item)){
+					temp = current;
+				}
+			}
+		}
+		return temp;
+	}
+	/**
+	 * @param itemName
+	 * @return
+	 */
+	private Item findItem(String itemName){
+		Item temp = null;
+		if (itemName != null){
+			for (Item item : inventory){
+				if (item.getValueForKey(Item.ITEM_NAME).equals(itemName)){
+					temp = new Item(item);
+				}
+			}
+		}
+		return temp;
+	}
+	/**
+	 * @param item
+	 * @return
+	 */
+	private int getItemIndex(Item item){
+		int index = -1;
+		if (item != null){
+			for ( int i = 0; i < inventory.size(); i++){
+				if (inventory.get(i).equals(item)){
+					index = i;
+				}
+			}
+		}
+		return index;
+	}
 	
     
 }
