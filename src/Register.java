@@ -31,6 +31,9 @@ public class Register {
 	
 	/***** Other *****/
 	
+	/**
+	 * @param sale
+	 */
 	public void addNewSale(Sale sale) {
 		int paymentReturnCode;
 		boolean canMakeSale = preSaleInventoryCheck(sale);
@@ -40,7 +43,7 @@ public class Register {
 				System.err.println("Sale Failed / Payment Failed: "+sale.getValueForKey(Sale.PAYMENT_VERIFIED));
 			} else if (paymentReturnCode == Sale.PAYMENT_UNDERPAID){
 				if (allowNegativeSales){
-					// Continue processing sale
+					//TODO Continue processing sale where multiple payments are allwed and tracked
 				} else {
 					System.err.println("Sale Failed: "+Sale.PAYMENT_VERIFIED_UNDERPAID);
 				}
@@ -118,6 +121,7 @@ public class Register {
 	 *	Date stamp on sale
 	 * @param sale
 	 */
+	//TODO use the increment integer value method from item to help processing
 	public void processSale(Sale sale){
 		
 	}
